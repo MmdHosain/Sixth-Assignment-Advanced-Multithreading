@@ -1,5 +1,9 @@
 package sbu.cs.CalculatePi;
 
+import java.math.BigDecimal;
+import java.util.Random;
+import java.util.random.RandomGenerator;
+
 public class PiCalculator {
 
     /**
@@ -15,13 +19,44 @@ public class PiCalculator {
      * @return pi in string format (the string representation of the BigDecimal object)
      */
 
-    public String calculate(int floatingPoint)
-    {
-        // TODO
+    // Euler
+    public BigDecimal PI_Euler(int floatingPoint){
+
         return null;
     }
 
+    public String calculate(int floatingPoint)
+    {
+        BigDecimal PI = PI_Euler(floatingPoint);
+        return PI.toString();
+    }
+
     public static void main(String[] args) {
-        // Use the main function to test the code yourself
+//        int[] arr = new int[10];
+//        for (int i = 0; i < 10; i++) {
+//            arr[i] = 0 ;
+//        }
+        Double a = (double) 0;
+        Double b = (double) 0;
+        for (int j = 0; j < 100; j++)
+        {
+            for (int i = 0; i < 10000; i++) {
+                Random rand = new Random();
+                int x= rand.nextInt(-1000,1000);
+                x = x*x;
+                int y= rand.nextInt(-1000,1000);
+                y = y*y;
+
+                if (x + y < 1000*1000){
+                    a++;
+                }
+                else b++;
+
+            }
+            System.out.println(j);
+        }
+//        for (int i = 0; i < 10; i++) {
+            System.out.println(a/b);
+//        }
     }
 }
