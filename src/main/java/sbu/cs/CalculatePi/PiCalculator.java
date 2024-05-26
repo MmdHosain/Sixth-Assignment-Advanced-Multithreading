@@ -1,10 +1,9 @@
 package sbu.cs.CalculatePi;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.Random;
-import java.util.random.RandomGenerator;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PiCalculator {
 
@@ -25,6 +24,62 @@ public class PiCalculator {
     public BigDecimal PI_Euler(int floatingPoint){
 
         int N = floatingPoint;
+
+
+
+        List<BigDecimal> resultList = new ArrayList<>();
+        BigDecimal result = BigDecimal.valueOf(0);
+
+        resultList.add(result);
+        resultList.add(result);
+        resultList.add(result);
+        resultList.add(result);
+
+        // threads
+
+        Calculator calculat1 = new Calculator(0,N/2                 ,floatingPoint,resultList,1);
+        Calculator calculat2 = new Calculator((N/2),(3*N/4)     ,floatingPoint,resultList,2);
+        Calculator calculat3 = new Calculator((3*N/4),(7*N/8)   ,floatingPoint,resultList,3);
+        Calculator calculat4 = new Calculator((7*N/8),N+1 ,floatingPoint,resultList,4);
+
+        Thread thread1 = new Thread(calculat1);
+        Thread thread2 = new Thread(calculat2);
+        Thread thread3 = new Thread(calculat3);
+        Thread thread4 = new Thread(calculat4);
+        try {
+            thread1.start();
+
+            thread2.start();
+
+            thread3.start();
+
+            thread4.start();
+
+            thread1.join();
+            thread2.join();
+            thread3.join();
+            thread4.join();
+
+        }
+        catch(Exception ignored){
+            System.out.println("error in thread running");
+        }
+        result = result .add(resultList.get(0));
+        result = result .add(resultList.get(1));
+        result = result .add(resultList.get(2));
+        result = result .add(resultList.get(3));
+
+        return result.setScale(floatingPoint,RoundingMode.FLOOR);
+    }
+
+    public static class Calculator implements Runnable
+    {
+
+        int a;
+        int b;
+        int n;
+        int floatingPoint;
+
         BigDecimal num1 = BigDecimal.valueOf(1);
         BigDecimal num2 = BigDecimal.valueOf(2);
         BigDecimal num4 = BigDecimal.valueOf(4);
@@ -36,27 +91,39 @@ public class PiCalculator {
         BigDecimal kasr2 ;
         BigDecimal kasr3 ;
         BigDecimal kasr4 ;
-        BigDecimal temp ;
-
         BigDecimal result = BigDecimal.valueOf(0);
-        for (int i = 0; i < N; i++) {
-            BigDecimal I = BigDecimal.valueOf(i);
+        List<BigDecimal> resultList;
 
-            kasr1 = num4 .divide(( (num8 .multiply (I))) .add (num1),floatingPoint, RoundingMode.HALF_UP);
-            kasr2 = num2 .divide(( (num8 .multiply (I))) .add (num4),floatingPoint, RoundingMode.HALF_UP);
-            kasr3 = num1 .divide(( (num8 .multiply (I))) .add (num5),floatingPoint, RoundingMode.HALF_UP);
-            temp = ((num8 .multiply (I))) .add (num6);
-            kasr4 = num1 .divide( temp,1000, RoundingMode.HALF_UP);
-
-            BigDecimal sum = (( kasr1 .subtract(kasr2)).subtract(kasr3)).subtract(kasr4);
-
-            for (int j = 0; j < i; j++) {
-
-                sum = sum.divide(num16);
-            }
-            result = result.add(sum);
+        public Calculator(int a,int b,int floatingPoint,List<BigDecimal> resultList,int n) {
+            this.a=a;
+            this.b=b;
+            this.n=n;
+            this.floatingPoint = floatingPoint;
+            this.resultList =resultList;
         }
-        return result.setScale(floatingPoint,RoundingMode.FLOOR);
+
+        @Override
+        public void run() {
+
+            for (int i = a; i < b; i++) {
+                BigDecimal I = BigDecimal.valueOf(i);
+
+                kasr1 = num4 .divide(( (num8 .multiply (I))) .add (num1),floatingPoint+10, RoundingMode.HALF_UP);
+                kasr2 = num2 .divide(( (num8 .multiply (I))) .add (num4),floatingPoint+10, RoundingMode.HALF_UP);
+                kasr3 = num1 .divide(( (num8 .multiply (I))) .add (num5),floatingPoint+10, RoundingMode.HALF_UP);
+                kasr4 = num1 .divide( ((num8 .multiply (I))) .add (num6),floatingPoint+10, RoundingMode.HALF_UP);
+
+                BigDecimal sum = (( kasr1 .subtract(kasr2)).subtract(kasr3)).subtract(kasr4);
+
+                for (int j = 0; j < i; j++) {
+
+                    sum = sum.divide(num16);
+                }
+                result = result.add(sum);
+            }
+            resultList.set(n-1,result.add(resultList.get(n-1))) ;
+        }
+
     }
 
     public String calculate(int floatingPoint)
