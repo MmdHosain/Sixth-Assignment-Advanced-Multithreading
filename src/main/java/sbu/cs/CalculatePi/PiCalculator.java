@@ -1,6 +1,8 @@
 package sbu.cs.CalculatePi;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Random;
 import java.util.random.RandomGenerator;
 
@@ -22,7 +24,39 @@ public class PiCalculator {
     // Euler
     public BigDecimal PI_Euler(int floatingPoint){
 
-        return null;
+        int N = floatingPoint;
+        BigDecimal num1 = BigDecimal.valueOf(1);
+        BigDecimal num2 = BigDecimal.valueOf(2);
+        BigDecimal num4 = BigDecimal.valueOf(4);
+        BigDecimal num5 = BigDecimal.valueOf(5);
+        BigDecimal num6 = BigDecimal.valueOf(6);
+        BigDecimal num8 = BigDecimal.valueOf(8);
+        BigDecimal num16 = BigDecimal.valueOf(16);
+        BigDecimal kasr1 ;
+        BigDecimal kasr2 ;
+        BigDecimal kasr3 ;
+        BigDecimal kasr4 ;
+        BigDecimal temp ;
+
+        BigDecimal result = BigDecimal.valueOf(0);
+        for (int i = 0; i < N; i++) {
+            BigDecimal I = BigDecimal.valueOf(i);
+
+            kasr1 = num4 .divide(( (num8 .multiply (I))) .add (num1),floatingPoint, RoundingMode.HALF_UP);
+            kasr2 = num2 .divide(( (num8 .multiply (I))) .add (num4),floatingPoint, RoundingMode.HALF_UP);
+            kasr3 = num1 .divide(( (num8 .multiply (I))) .add (num5),floatingPoint, RoundingMode.HALF_UP);
+            temp = ((num8 .multiply (I))) .add (num6);
+            kasr4 = num1 .divide( temp,1000, RoundingMode.HALF_UP);
+
+            BigDecimal sum = (( kasr1 .subtract(kasr2)).subtract(kasr3)).subtract(kasr4);
+
+            for (int j = 0; j < i; j++) {
+
+                sum = sum.divide(num16);
+            }
+            result = result.add(sum);
+        }
+        return result.setScale(floatingPoint,RoundingMode.FLOOR);
     }
 
     public String calculate(int floatingPoint)
@@ -32,31 +66,5 @@ public class PiCalculator {
     }
 
     public static void main(String[] args) {
-//        int[] arr = new int[10];
-//        for (int i = 0; i < 10; i++) {
-//            arr[i] = 0 ;
-//        }
-        Double a = (double) 0;
-        Double b = (double) 0;
-        for (int j = 0; j < 100; j++)
-        {
-            for (int i = 0; i < 10000; i++) {
-                Random rand = new Random();
-                int x= rand.nextInt(-1000,1000);
-                x = x*x;
-                int y= rand.nextInt(-1000,1000);
-                y = y*y;
-
-                if (x + y < 1000*1000){
-                    a++;
-                }
-                else b++;
-
-            }
-            System.out.println(j);
-        }
-//        for (int i = 0; i < 10; i++) {
-            System.out.println(a/b);
-//        }
     }
 }
